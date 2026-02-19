@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrendFarm | Strategic Development Framework</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* === TRENDFARM THEME === */
+    :root {
+        --bg-primary: #000000;
+        --bg-secondary: #F9F6E4;
+        --text-primary: #FFFFFF;
+        --text-secondary: #000000;
+        --accent: #D8F646;
+        --accent-secondary: #186147;
+        --accent-tertiary: #F2CFE2;
+        --cream: #F9F6E4;
+        --black: #000000;
+        --white: #FFFFFF;
+        --font-display: 'Poppins', sans-serif;
+        --font-body: 'Poppins', sans-serif;
+        --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+        --duration-normal: 0.5s;
+    }
+
+    /* === RESET === */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-snap-type: y mandatory; overflow-y: scroll; }
+    body { font-family: var(--font-body); background: var(--bg-primary); color: var(--text-primary); }
+
+    /* === SLIDES === */
+    .slide { width: 100vw; height: 100vh; scroll-snap-align: start; position: relative;
+             overflow: hidden; display: flex; }
+
+    /* === NAV DOTS === */
+    .nav { position: fixed; right: 24px; top: 50%; transform: translateY(-50%);
+           z-index: 100; display: flex; flex-direction: column; gap: 8px; }
+    .nav button { width: 10px; height: 10px; border-radius: 50%;
+                  border: 1px solid rgba(255,255,255,0.4); background: transparent;
+                  cursor: pointer; transition: all 0.3s; }
+    .nav button.active { background: #fff; border-color: #fff; }
+
+    /* === TYPOGRAPHY === */
+    .heading-xl { font-size: clamp(48px, 8vw, 96px); font-weight: 700; line-height: 1; }
+    .heading-lg { font-size: clamp(32px, 5vw, 56px); font-weight: 600; line-height: 1.1; }
+    .heading-md { font-size: clamp(20px, 3vw, 32px); font-weight: 500; line-height: 1.3; }
+    .body-text  { font-size: 18px; font-weight: 300; line-height: 1.6; color: #ccc; max-width: 520px; }
+    .label      { font-size: 12px; text-transform: uppercase; letter-spacing: 3px;
+                  font-weight: 500; color: #888; }
+    .section-bar { display: flex; justify-content: space-between; padding: 24px 48px;
+                   font-size: 12px; text-transform: uppercase; letter-spacing: 3px;
+                   font-weight: 500; color: #888; }
+    .metric { font-size: clamp(24px, 4vw, 48px); font-weight: 700; color: var(--accent); }
+    .quote-text { font-size: 24px; font-weight: 300; line-height: 1.4; font-style: italic; }
+
+    /* === ANIMATIONS === */
+    .slide-content { opacity: 0; transform: translateY(30px); transition: all 0.8s var(--ease-out-expo); }
+    .slide.visible .slide-content { opacity: 1; transform: translateY(0); }
+    .slide-content:nth-child(2) { transition-delay: 0.1s; }
+    .slide-content:nth-child(3) { transition-delay: 0.2s; }
+    .slide-content:nth-child(4) { transition-delay: 0.3s; }
+    .slide-content:nth-child(5) { transition-delay: 0.4s; }
+
+    /* === LAYOUT HELPERS === */
+    .center { display: flex; justify-content: center; align-items: center; text-align: center; }
+    .left-content { display: flex; align-items: center; padding: 0 48px; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; height: 100vh; }
+    .grid-4 { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; padding: 48px; }
+    .space-between { justify-content: space-between; }
+    
+    /* === PROBLEM VISUALIZATION === */
+    .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 48px; }
+    .problem-item { padding: 24px; background: rgba(220, 38, 38, 0.1); border-left: 4px solid #DC2626; border-radius: 8px; }
+    .problem-title { color: #DC2626; font-weight: 600; margin-bottom: 12px; }
+    
+    /* === SOLUTION VISUALIZATION === */
+    .solution-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 48px; }
+    .solution-item { padding: 24px; background: rgba(216, 246, 70, 0.1); border-left: 4px solid var(--accent); border-radius: 8px; }
+    .solution-title { color: var(--accent); font-weight: 600; margin-bottom: 12px; }
+    
+    /* === WORKFLOW VISUALIZATION === */
+    .workflow { display: flex; align-items: center; justify-content: space-between; margin: 48px 0; }
+    .workflow-step { text-align: center; flex: 1; }
+    .workflow-icon { width: 80px; height: 80px; background: var(--accent-secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 32px; }
+    .workflow-arrow { font-size: 24px; color: var(--accent); margin: 0 16px; }
+    
+    /* === RESPONSIVE === */
+    @media (max-width: 768px) { 
+        .nav { display: none; }
+        .two-col { grid-template-columns: 1fr; }
+        .grid-4 { grid-template-columns: 1fr; }
+        .problem-grid { grid-template-columns: 1fr; }
+        .solution-grid { grid-template-columns: 1fr; }
+        .workflow { flex-direction: column; gap: 24px; }
+        .workflow-arrow { transform: rotate(90deg); }
+    }
+    
+    @media (prefers-reduced-motion: reduce) {
+      .slide-content { transition: opacity 0.3s ease; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" aria-label="Slide navigation">
+    <button onclick="document.getElementById('slide-1').scrollIntoView({behavior:'smooth'})"></button>
+    <button onclick="document.getElementById('slide-2').scrollIntoView({behavior:'smooth'})"></button>
+    <button onclick="document.getElementById('slide-3').scrollIntoView({behavior:'smooth'})"></button>
+    <button onclick="document.getElementById('slide-4').scrollIntoView({behavior:'smooth'})"></button>
+    <button onclick="document.getElementById('slide-5').scrollIntoView({behavior:'smooth'})"></button>
+    <button onclick="document.getElementById('slide-6').scrollIntoView({behavior:'smooth'})"></button>
+    <button onclick="document.getElementById('slide-7').scrollIntoView({behavior:'smooth'})"></button>
+    <button onclick="document.getElementById('slide-8').scrollIntoView({behavior:'smooth'})"></button>
+  </nav>
+
+  <!-- SLIDE 1: COVER -->
+  <section id="slide-1" class="slide center" style="flex-direction:column;padding:48px;background: linear-gradient(135deg, #000000 0%, #186147 100%);">
+    <div class="slide-content">
+      <p class="label" style="margin-bottom:24px;">STRATEGIC DEVELOPMENT FRAMEWORK</p>
+      <h1 class="heading-xl">DIVISION OF LABOR</h1>
+      <p class="heading-md" style="margin-top:16px;color:#ccc;">Herbert Strategy + Claude Code Implementation</p>
+      <div style="margin-top:48px;display:flex;gap:32px;justify-content:center;">
+        <p class="label">TRENDFARM | 2026</p>
+        <p class="label">STRATEGIC PROPOSAL</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 2: CURRENT PROBLEM -->
+  <section id="slide-2" class="slide" style="background: var(--bg-primary);">
+    <div class="section-bar">
+      <span>01. CURRENT SITUATION</span>
+      <span>STRATEGIC DEVELOPMENT FRAMEWORK</span>
+    </div>
+    <div class="left-content" style="flex-direction: column; align-items: flex-start; padding-top: 120px;">
+      <div class="slide-content">
+        <h2 class="heading-lg">The Implementation Bottleneck</h2>
+        <p class="body-text" style="margin: 32px 0;">Herbert attempts full-stack development but lacks coding precision</p>
+      </div>
+      
+      <div class="slide-content problem-grid">
+        <div class="problem-item">
+          <div class="problem-title">React Failures</div>
+          <p style="color: #ccc; font-size: 14px;">External CDN dependencies failing, components not rendering properly</p>
+        </div>
+        <div class="problem-item">
+          <div class="problem-title">Deployment Issues</div>
+          <p style="color: #ccc; font-size: 14px;">Multiple failed attempts, messy authentication handling</p>
+        </div>
+        <div class="problem-item">
+          <div class="problem-title">Memory Gaps</div>
+          <p style="color: #ccc; font-size: 14px;">Forgotten credentials, continuity breaks, security concerns</p>
+        </div>
+        <div class="problem-item">
+          <div class="problem-title">Time Waste</div>
+          <p style="color: #ccc; font-size: 14px;">Hours spent debugging instead of strategic value creation</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3: RECOGNITION -->
+  <section id="slide-3" class="slide center" style="background: var(--accent-secondary); flex-direction: column; padding: 48px;">
+    <div class="slide-content">
+      <p class="quote-text" style="color: var(--white); max-width: 800px; text-align: center;">
+        "I am not that confident in your ability to code. It might be better for you to spec something out fully and then I give the outline to Claude Code."
+      </p>
+      <p style="margin-top: 32px; color: rgba(255,255,255,0.7); font-weight: 500;">— Ross van Wyk, TrendFarm</p>
+    </div>
+    <div class="slide-content" style="margin-top: 48px; text-align: center;">
+      <h3 class="heading-md" style="color: var(--accent);">Strategic Insight</h3>
+      <p class="body-text" style="color: rgba(255,255,255,0.8); margin-top: 16px;">
+        Honest feedback that reveals the optimal division of labor
+      </p>
+    </div>
+  </section>
+
+  <!-- SLIDE 4: PROPOSED SOLUTION -->
+  <section id="slide-4" class="slide" style="background: var(--bg-primary);">
+    <div class="section-bar">
+      <span>02. STRATEGIC SOLUTION</span>
+      <span>DIVISION OF LABOR</span>
+    </div>
+    <div class="left-content" style="flex-direction: column; align-items: flex-start; padding-top: 120px;">
+      <div class="slide-content">
+        <h2 class="heading-lg">Complementary Strengths</h2>
+        <p class="body-text" style="margin: 32px 0;">Play to each AI's core competencies for maximum value</p>
+      </div>
+      
+      <div class="slide-content solution-grid">
+        <div class="solution-item">
+          <div class="solution-title">Herbert: Strategic Layer</div>
+          <p style="color: #ccc; font-size: 14px;">Requirements, architecture, business logic, user experience, project management</p>
+        </div>
+        <div class="solution-item">
+          <div class="solution-title">Claude Code: Implementation</div>
+          <p style="color: #ccc; font-size: 14px;">Clean React code, reliable deployments, technical best practices</p>
+        </div>
+        <div class="solution-item">
+          <div class="solution-title">Comprehensive Specs</div>
+          <p style="color: #ccc; font-size: 14px;">12,000+ word specifications with complete technical requirements</p>
+        </div>
+        <div class="solution-item">
+          <div class="solution-title">Quality Assurance</div>
+          <p style="color: #ccc; font-size: 14px;">Herbert reviews, tests, and ensures business requirements are met</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 5: WORKFLOW -->
+  <section id="slide-5" class="slide" style="background: var(--cream); color: var(--text-secondary);">
+    <div class="section-bar" style="color: #666;">
+      <span>03. WORKFLOW</span>
+      <span>IMPLEMENTATION PROCESS</span>
+    </div>
+    <div style="padding: 120px 48px 48px; height: 100%;">
+      <div class="slide-content">
+        <h2 class="heading-lg" style="color: var(--text-secondary);">Streamlined Process</h2>
+        <p style="color: #666; margin: 32px 0; font-size: 18px;">From business need to production deployment</p>
+      </div>
+      
+      <div class="slide-content workflow">
+        <div class="workflow-step">
+          <div class="workflow-icon">📋</div>
+          <h4 style="font-weight: 600; color: var(--text-secondary);">Herbert Specs</h4>
+          <p style="color: #666; font-size: 14px;">Complete requirements<br>Architecture design<br>Business logic</p>
+        </div>
+        <div class="workflow-arrow">→</div>
+        <div class="workflow-step">
+          <div class="workflow-icon">⚡</div>
+          <h4 style="font-weight: 600; color: var(--text-secondary);">Claude Code</h4>
+          <p style="color: #666; font-size: 14px;">Clean implementation<br>Professional deployment<br>Technical excellence</p>
+        </div>
+        <div class="workflow-arrow">→</div>
+        <div class="workflow-step">
+          <div class="workflow-icon">🚀</div>
+          <h4 style="font-weight: 600; color: var(--text-secondary);">Production</h4>
+          <p style="color: #666; font-size: 14px;">Live system<br>Team training<br>Ongoing enhancement</p>
+        </div>
+      </div>
+      
+      <div class="slide-content" style="margin-top: 48px; text-align: center;">
+        <p style="color: var(--accent-secondary); font-weight: 600;">Timeline: 24-48 hours from spec to deployment</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 6: BENEFITS -->
+  <section id="slide-6" class="slide" style="background: var(--bg-primary);">
+    <div class="section-bar">
+      <span>04. BENEFITS</span>
+      <span>STRATEGIC ADVANTAGES</span>
+    </div>
+    <div style="padding: 120px 48px 48px;">
+      <div class="slide-content">
+        <h2 class="heading-lg">Measurable Improvements</h2>
+        <p class="body-text" style="margin: 32px 0;">Quality, speed, and reliability gains</p>
+      </div>
+      
+      <div class="slide-content" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 32px; margin-top: 48px;">
+        <div style="text-align: center;">
+          <div class="metric">5-10x</div>
+          <p style="color: #ccc; font-weight: 500;">Faster Development</p>
+          <p style="color: #888; font-size: 14px; margin-top: 8px;">From concept to production</p>
+        </div>
+        <div style="text-align: center;">
+          <div class="metric">90%</div>
+          <p style="color: #ccc; font-weight: 500;">Fewer Bugs</p>
+          <p style="color: #888; font-size: 14px; margin-top: 8px;">Professional code quality</p>
+        </div>
+        <div style="text-align: center;">
+          <div class="metric">100%</div>
+          <p style="color: #ccc; font-weight: 500;">Strategic Focus</p>
+          <p style="color: #888; font-size: 14px; margin-top: 8px;">Herbert on business value</p>
+        </div>
+        <div style="text-align: center;">
+          <div class="metric">24/7</div>
+          <p style="color: #ccc; font-weight: 500;">Support</p>
+          <p style="color: #888; font-size: 14px; margin-top: 8px;">Continuous enhancement</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 7: FINANCE HUB EXAMPLE -->
+  <section id="slide-7" class="slide" style="background: var(--cream); color: var(--text-secondary);">
+    <div class="section-bar" style="color: #666;">
+      <span>05. CASE STUDY</span>
+      <span>FINANCE HUB PRO</span>
+    </div>
+    <div class="two-col">
+      <div style="padding: 120px 48px 48px; display: flex; flex-direction: column; justify-content: center;">
+        <div class="slide-content">
+          <h2 class="heading-lg" style="color: var(--text-secondary);">Proof of Concept</h2>
+          <p style="color: #666; margin: 32px 0; font-size: 18px;">
+            Herbert created comprehensive 12,000-word specification for Finance Hub Pro replacement
+          </p>
+          
+          <div style="margin-top: 32px;">
+            <h4 style="color: var(--accent-secondary); font-weight: 600; margin-bottom: 16px;">Specification Includes:</h4>
+            <ul style="color: #666; line-height: 1.8;">
+              <li>Complete component architecture</li>
+              <li>Business logic requirements</li>
+              <li>User permission matrix</li>
+              <li>Integration specifications</li>
+              <li>Performance targets</li>
+              <li>Mobile responsiveness</li>
+            </ul>
+          </div>
+          
+          <p style="color: var(--accent-secondary); font-weight: 600; margin-top: 32px;">
+            Ready for Claude Code implementation
+          </p>
+        </div>
+      </div>
+      
+      <div style="background: var(--bg-primary); padding: 48px; display: flex; flex-direction: column; justify-content: center;">
+        <div class="slide-content">
+          <div style="color: var(--accent); font-size: 24px; font-weight: 700; margin-bottom: 24px;">
+            📊 Specification Quality
+          </div>
+          <div style="display: grid; gap: 24px;">
+            <div>
+              <div style="color: var(--accent); font-size: 32px; font-weight: 700;">12,768</div>
+              <div style="color: #ccc; font-size: 14px;">Words of detailed specs</div>
+            </div>
+            <div>
+              <div style="color: var(--accent); font-size: 32px; font-weight: 700;">17</div>
+              <div style="color: #ccc; font-size: 14px;">React components specified</div>
+            </div>
+            <div>
+              <div style="color: var(--accent); font-size: 32px; font-weight: 700;">13+</div>
+              <div style="color: #ccc; font-size: 14px;">Business logic hooks</div>
+            </div>
+            <div>
+              <div style="color: var(--accent); font-size: 32px; font-weight: 700;">100%</div>
+              <div style="color: #ccc; font-size: 14px;">Implementation ready</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 8: NEXT STEPS -->
+  <section id="slide-8" class="slide center" style="flex-direction:column;padding:48px;background: linear-gradient(135deg, #186147 0%, #000000 100%);">
+    <div class="slide-content">
+      <h2 class="heading-lg" style="margin-bottom: 32px;">Implementation Plan</h2>
+      <div style="text-align: left; max-width: 600px;">
+        <div style="margin-bottom: 24px;">
+          <div style="color: var(--accent); font-weight: 600; margin-bottom: 8px;">Phase 1: Immediate</div>
+          <p style="color: #ccc;">Test with Finance Hub Pro specification</p>
+        </div>
+        <div style="margin-bottom: 24px;">
+          <div style="color: var(--accent); font-weight: 600; margin-bottom: 8px;">Phase 2: Scale</div>
+          <p style="color: #ccc;">Apply framework to all TrendFarm development</p>
+        </div>
+        <div style="margin-bottom: 24px;">
+          <div style="color: var(--accent); font-weight: 600; margin-bottom: 8px;">Phase 3: Optimize</div>
+          <p style="color: #ccc;">Continuous enhancement based on results</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-content" style="margin-top: 48px; text-align: center;">
+      <div style="padding: 24px 48px; background: var(--accent); color: var(--black); border-radius: 8px; font-weight: 600;">
+        Strategic Development Framework: Ready for Implementation
+      </div>
+      <p style="margin-top: 24px; color: rgba(255,255,255,0.7); font-size: 14px;">
+        TRENDFARM | STRATEGIC PROPOSAL | 2026
+      </p>
+    </div>
+  </section>
+
+  <script>
+    /* === KEYBOARD NAV === */
+    document.addEventListener('keydown', e => {
+      const slides = document.querySelectorAll('.slide');
+      const current = [...slides].findIndex(s => {
+        const r = s.getBoundingClientRect();
+        return r.top >= -50 && r.top <= 50;
+      });
+      if (['ArrowDown','ArrowRight',' '].includes(e.key)) {
+        e.preventDefault();
+        slides[Math.min(current + 1, slides.length - 1)].scrollIntoView({ behavior: 'smooth' });
+      }
+      if (['ArrowUp','ArrowLeft'].includes(e.key)) {
+        e.preventDefault();
+        slides[Math.max(current - 1, 0)].scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+
+    /* === INTERSECTION OBSERVER === */
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        entry.target.classList.toggle('visible', entry.isIntersecting);
+        const idx = [...document.querySelectorAll('.slide')].indexOf(entry.target);
+        const dots = document.querySelectorAll('.nav button');
+        if (dots[idx]) dots[idx].classList.toggle('active', entry.isIntersecting);
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('.slide').forEach(s => observer.observe(s));
+  </script>
+</body>
+</html>
