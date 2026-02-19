@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Hub Pro - Standalone Demo</title>
+    
+    <!-- React and dependencies -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Chakra UI -->
+    <script src="https://unpkg.com/@chakra-ui/react@2.8.2/dist/index.umd.js"></script>
+    <script src="https://unpkg.com/@emotion/react@11/dist/emotion-react.umd.min.js"></script>
+    <script src="https://unpkg.com/@emotion/styled@11/dist/emotion-styled.umd.min.js"></script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            background: #FAFAFA; 
+            color: #1F2937;
+        }
+        
+        .demo-banner {
+            background: linear-gradient(90deg, #F97316 0%, #DC2626 100%);
+            color: white;
+            padding: 12px 20px;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .mock-notice {
+            background: #EFF6FF;
+            border: 2px solid #3B82F6;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px;
+            color: #1E40AF;
+            font-weight: 500;
+        }
+        
+        /* Basic styling for demo */
+        .sidebar { 
+            width: 280px; 
+            background: white; 
+            border-right: 1px solid #E5E7EB; 
+            min-height: calc(100vh - 60px);
+            padding: 24px;
+        }
+        
+        .main-content { 
+            flex: 1; 
+            padding: 32px; 
+            overflow-x: auto;
+        }
+        
+        .app-container { 
+            display: flex; 
+            min-height: calc(100vh - 60px);
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+        
+        .logo {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #F97316 0%, #DC2626 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #6B7280;
+        }
+        
+        .nav-item:hover {
+            background: #F3F4F6;
+            color: #374151;
+            transform: translateX(2px);
+        }
+        
+        .nav-item.active {
+            background: #FEF3E8;
+            color: #F97316;
+            border-left: 3px solid #F97316;
+            font-weight: 600;
+        }
+        
+        .section-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+        
+        .section-subtitle {
+            color: #6B7280;
+            margin-bottom: 32px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #E5E7EB;
+            margin-bottom: 24px;
+        }
+        
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #E5E7EB;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #F97316;
+            margin-bottom: 8px;
+        }
+        
+        .metric-label {
+            color: #6B7280;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .btn {
+            background: #F97316;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin-right: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .btn:hover {
+            background: #DC2626;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #6B7280;
+        }
+        
+        .btn-secondary:hover {
+            background: #374151;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .table th {
+            background: #F9FAFB;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        
+        .table td {
+            padding: 12px;
+            border-bottom: 1px solid #F3F4F6;
+        }
+        
+        .table tr:hover {
+            background: #F9FAFB;
+        }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-pending { background: #FEF3C7; color: #D97706; }
+        .status-approved { background: #D1FAE5; color: #059669; }
+        .status-outstanding { background: #FEE2E2; color: #DC2626; }
+        .status-paid { background: #D1FAE5; color: #059669; }
+        
+        @media (max-width: 768px) {
+            .app-container { flex-direction: column; }
+            .sidebar { width: 100%; min-height: auto; }
+            .main-content { padding: 16px; }
+            .metric-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-banner">
+        🧪 FINANCE HUB PRO - STANDALONE DEMO - Full Interactive Preview (Download & Open Locally)
+    </div>
+    
+    <div class="mock-notice">
+        <strong>🎯 Demo Mode:</strong> This is your Finance Hub Pro preview with mock data. Experience the speed, design, and functionality your team will get. All features are interactive!
+    </div>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { ChakraProvider, Box, Flex, Stack, Text, Button, HStack, VStack, Heading, Alert } = ChakraUI;
+
+        // Mock Data
+        const mockData = {
+            dashboard: {
+                metrics: [
+                    { label: 'Outstanding CEs', value: '7', trend: '+2 from last week' },
+                    { label: 'Pending Payments', value: 'R47,280', trend: '3 payments due' },
+                    { label: 'Monthly Revenue', value: 'R284,650', trend: '+12% vs last month' },
+                    { label: 'Active Projects', value: '23', trend: '5 new this month' }
+                ],
+                actionItems: [
+                    'Review 3 pending CE approvals',
+                    'Process R47K in outstanding payments',
+                    'Send 4 invoices awaiting delivery',
+                    'Update 2 client retainer agreements'
+                ]
+            },
+            costEstimates: [
+                { id: 'CE-2026-001', client: 'Ayana Active', amount: 'R15,500', status: 'Pending Approval', date: '2026-02-18' },
+                { id: 'CE-2026-002', client: 'Checkers', amount: 'R28,750', status: 'Approved', date: '2026-02-17' },
+                { id: 'CE-2026-003', client: 'OSMO', amount: 'R12,300', status: 'Draft', date: '2026-02-16' },
+                { id: 'CE-2026-004', client: 'Vodacom', amount: 'R45,600', status: 'CE Sent', date: '2026-02-15' },
+                { id: 'CE-2026-005', client: 'PEP', amount: 'R22,150', status: 'Invoiced', date: '2026-02-14' }
+            ],
+            payments: [
+                { id: 'PAY-001', client: 'Shoe City', amount: 'R18,500', status: 'Outstanding', dueDate: '2026-02-20' },
+                { id: 'PAY-002', client: 'TAH', amount: 'R12,750', status: 'In Payrun', dueDate: '2026-02-18' },
+                { id: 'PAY-003', client: 'Refinery', amount: 'R31,200', status: 'Paid', dueDate: '2026-02-15' },
+                { id: 'PAY-004', client: 'SPCC', amount: 'R8,950', status: 'Outstanding', dueDate: '2026-02-22' }
+            ],
+            invoices: [
+                { id: 'INV-2026-015', client: 'Cuddlesome', amount: 'R24,800', status: 'Sent', date: '2026-02-17' },
+                { id: 'INV-2026-014', client: 'LA LAB', amount: 'R19,650', status: 'Paid', date: '2026-02-16' },
+                { id: 'INV-2026-013', client: 'CODE', amount: 'R36,400', status: 'Overdue', date: '2026-02-10' }
+            ]
+        };
+
+        // Logo Component
+        const TrendfarmLogo = () => (
+            <div className="logo-container">
+                <div className="logo">TF</div>
+                <div>
+                    <div style={{ fontWeight: 'bold', fontSize: '20px', color: '#111827' }}>Trendfarm</div>
+                    <div style={{ fontSize: '14px', color: '#F97316', fontWeight: '500' }}>Finance Hub Pro</div>
+                </div>
+            </div>
+        );
+
+        // Navigation Component
+        const Navigation = ({ activeView, setActiveView }) => {
+            const navItems = [
+                { id: 'dashboard', label: 'Dashboard', icon: '📊', badge: null },
+                { id: 'cost-estimates', label: 'Cost Estimates', icon: '📄', badge: '3' },
+                { id: 'payments', label: 'Payments', icon: '💳', badge: '2' },
+                { id: 'invoices', label: 'Invoices', icon: '🧾', badge: null },
+            ];
+
+            return (
+                <div className="sidebar">
+                    <TrendfarmLogo />
+                    
+                    <div style={{ marginBottom: '24px' }}>
+                        <div style={{ fontSize: '12px', fontWeight: '600', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '12px' }}>
+                            NAVIGATION
+                        </div>
+                        {navItems.map(item => (
+                            <div 
+                                key={item.id}
+                                className={`nav-item ${activeView === item.id ? 'active' : ''}`}
+                                onClick={() => setActiveView(item.id)}
+                            >
+                                <span style={{ fontSize: '18px' }}>{item.icon}</span>
+                                <span style={{ flex: 1 }}>{item.label}</span>
+                                {item.badge && (
+                                    <span style={{ 
+                                        background: '#F97316', 
+                                        color: 'white', 
+                                        borderRadius: '20px', 
+                                        padding: '2px 8px', 
+                                        fontSize: '12px', 
+                                        fontWeight: 'bold',
+                                        minWidth: '20px',
+                                        textAlign: 'center'
+                                    }}>
+                                        {item.badge}
+                                    </span>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+
+                    <div style={{ 
+                        padding: '16px', 
+                        background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%)', 
+                        borderRadius: '12px',
+                        border: '1px solid rgba(249, 115, 22, 0.2)'
+                    }}>
+                        <div style={{ fontSize: '14px', fontWeight: '600', color: '#F97316', marginBottom: '8px' }}>
+                            💡 Finance Hub Pro
+                        </div>
+                        <div style={{ fontSize: '12px', color: '#6B7280', lineHeight: '1.4' }}>
+                            5-10x faster than Vibe, enterprise design, mobile responsive, unlimited potential!
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Dashboard View
+        const DashboardView = () => (
+            <div>
+                <div className="section-title">Dashboard</div>
+                <div className="section-subtitle">Your finance overview at a glance</div>
+                
+                <div className="metric-grid">
+                    {mockData.dashboard.metrics.map((metric, index) => (
+                        <div key={index} className="metric-card">
+                            <div className="metric-value">{metric.value}</div>
+                            <div className="metric-label">{metric.label}</div>
+                            <div style={{ fontSize: '12px', color: '#059669', marginTop: '8px' }}>
+                                {metric.trend}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                <div className="card">
+                    <h3 style={{ marginBottom: '16px', color: '#111827' }}>Action Items</h3>
+                    {mockData.dashboard.actionItems.map((item, index) => (
+                        <div key={index} style={{ 
+                            padding: '12px 0', 
+                            borderBottom: index < mockData.dashboard.actionItems.length - 1 ? '1px solid #F3F4F6' : 'none',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px'
+                        }}>
+                            <span style={{ color: '#F97316' }}>•</span>
+                            <span>{item}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+
+        // Cost Estimates View
+        const CostEstimatesView = () => (
+            <div>
+                <div className="section-title">Cost Estimates</div>
+                <div className="section-subtitle">Manage project estimates and approvals</div>
+                
+                <div style={{ marginBottom: '24px' }}>
+                    <button className="btn">+ New Cost Estimate</button>
+                    <button className="btn btn-secondary">Export to PDF</button>
+                    <button className="btn btn-secondary">Bulk Actions</button>
+                </div>
+
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th>CE ID</th>
+                            <th>Client</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {mockData.costEstimates.map(ce => (
+                            <tr key={ce.id}>
+                                <td style={{ fontWeight: '600' }}>{ce.id}</td>
+                                <td>{ce.client}</td>
+                                <td style={{ fontWeight: '600', color: '#F97316' }}>{ce.amount}</td>
+                                <td>
+                                    <span className={`status-badge status-${ce.status.toLowerCase().replace(' ', '-')}`}>
+                                        {ce.status}
+                                    </span>
+                                </td>
+                                <td>{ce.date}</td>
+                                <td>
+                                    <button className="btn" style={{ padding: '6px 12px', fontSize: '12px' }}>
+                                        Edit
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        );
+
+        // Payments View  
+        const PaymentsView = () => (
+            <div>
+                <div className="section-title">Payments</div>
+                <div className="section-subtitle">Track and manage client payments</div>
+                
+                <div style={{ marginBottom: '24px' }}>
+                    <button className="btn">Update Status</button>
+                    <button className="btn btn-secondary">Export to FNB</button>
+                    <button className="btn btn-secondary">Generate Reports</button>
+                </div>
+
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th>Payment ID</th>
+                            <th>Client</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Due Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {mockData.payments.map(payment => (
+                            <tr key={payment.id}>
+                                <td style={{ fontWeight: '600' }}>{payment.id}</td>
+                                <td>{payment.client}</td>
+                                <td style={{ fontWeight: '600', color: '#F97316' }}>{payment.amount}</td>
+                                <td>
+                                    <span className={`status-badge status-${payment.status.toLowerCase().replace(' ', '-')}`}>
+                                        {payment.status}
+                                    </span>
+                                </td>
+                                <td>{payment.dueDate}</td>
+                                <td>
+                                    <button className="btn" style={{ padding: '6px 12px', fontSize: '12px' }}>
+                                        Update
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        );
+
+        // Invoices View
+        const InvoicesView = () => (
+            <div>
+                <div className="section-title">Invoices</div>
+                <div className="section-subtitle">Invoice management and PDF downloads</div>
+                
+                <div style={{ marginBottom: '24px' }}>
+                    <button className="btn">Create Invoice</button>
+                    <button className="btn btn-secondary">Download PDFs</button>
+                    <button className="btn btn-secondary">Send Batch</button>
+                </div>
+
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th>Invoice ID</th>
+                            <th>Client</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {mockData.invoices.map(invoice => (
+                            <tr key={invoice.id}>
+                                <td style={{ fontWeight: '600' }}>{invoice.id}</td>
+                                <td>{invoice.client}</td>
+                                <td style={{ fontWeight: '600', color: '#F97316' }}>{invoice.amount}</td>
+                                <td>
+                                    <span className={`status-badge status-${invoice.status.toLowerCase()}`}>
+                                        {invoice.status}
+                                    </span>
+                                </td>
+                                <td>{invoice.date}</td>
+                                <td>
+                                    <button className="btn" style={{ padding: '6px 12px', fontSize: '12px' }}>
+                                        Download
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        );
+
+        // Main App Component
+        const FinanceHubDemo = () => {
+            const [activeView, setActiveView] = useState('dashboard');
+
+            const renderContent = () => {
+                switch(activeView) {
+                    case 'dashboard': return <DashboardView />;
+                    case 'cost-estimates': return <CostEstimatesView />;
+                    case 'payments': return <PaymentsView />;
+                    case 'invoices': return <InvoicesView />;
+                    default: return <DashboardView />;
+                }
+            };
+
+            return (
+                <div className="app-container">
+                    <Navigation activeView={activeView} setActiveView={setActiveView} />
+                    <div className="main-content">
+                        {renderContent()}
+                    </div>
+                </div>
+            );
+        };
+
+        // Render the app
+        ReactDOM.render(<FinanceHubDemo />, document.getElementById('root'));
+    </script>
+</body>
+</html>
