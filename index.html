@@ -3,24 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance Hub Pro - Standalone Demo</title>
-    
-    <!-- React and dependencies -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <!-- Chakra UI -->
-    <script src="https://unpkg.com/@chakra-ui/react@2.8.2/dist/index.umd.js"></script>
-    <script src="https://unpkg.com/@emotion/react@11/dist/emotion-react.umd.min.js"></script>
-    <script src="https://unpkg.com/@emotion/styled@11/dist/emotion-styled.umd.min.js"></script>
-    
+    <title>Finance Hub Pro - Live Demo</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
             background: #FAFAFA; 
             color: #1F2937;
+            line-height: 1.6;
         }
         
         .demo-banner {
@@ -45,24 +35,25 @@
             font-weight: 500;
         }
         
-        /* Basic styling for demo */
+        .app-container { 
+            display: flex; 
+            min-height: calc(100vh - 60px);
+        }
+        
         .sidebar { 
             width: 280px; 
             background: white; 
             border-right: 1px solid #E5E7EB; 
             min-height: calc(100vh - 60px);
             padding: 24px;
+            position: sticky;
+            top: 60px;
         }
         
         .main-content { 
             flex: 1; 
             padding: 32px; 
             overflow-x: auto;
-        }
-        
-        .app-container { 
-            display: flex; 
-            min-height: calc(100vh - 60px);
         }
         
         .logo-container {
@@ -86,6 +77,36 @@
             box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
         }
         
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .logo-title {
+            font-weight: bold;
+            font-size: 20px;
+            color: #111827;
+        }
+        
+        .logo-subtitle {
+            font-size: 14px;
+            color: #F97316;
+            font-weight: 500;
+        }
+        
+        .nav-section {
+            margin-bottom: 24px;
+        }
+        
+        .nav-header {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+        
         .nav-item {
             display: flex;
             align-items: center;
@@ -96,6 +117,7 @@
             cursor: pointer;
             transition: all 0.2s ease;
             color: #6B7280;
+            text-decoration: none;
         }
         
         .nav-item:hover {
@@ -111,6 +133,44 @@
             font-weight: 600;
         }
         
+        .nav-icon {
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .nav-badge {
+            background: #F97316;
+            color: white;
+            border-radius: 20px;
+            padding: 2px 8px;
+            font-size: 12px;
+            font-weight: bold;
+            min-width: 20px;
+            text-align: center;
+            margin-left: auto;
+        }
+        
+        .tip-box {
+            padding: 16px;
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+            border-radius: 12px;
+            border: 1px solid rgba(249, 115, 22, 0.2);
+        }
+        
+        .tip-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #F97316;
+            margin-bottom: 8px;
+        }
+        
+        .tip-text {
+            font-size: 12px;
+            color: #6B7280;
+            line-height: 1.4;
+        }
+        
         .section-title {
             font-size: 28px;
             font-weight: bold;
@@ -123,16 +183,7 @@
             margin-bottom: 32px;
         }
         
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            border: 1px solid #E5E7EB;
-            margin-bottom: 24px;
-        }
-        
-        .metric-grid {
+        .metrics-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 24px;
@@ -159,6 +210,45 @@
             color: #6B7280;
             font-size: 14px;
             font-weight: 500;
+        }
+        
+        .metric-trend {
+            font-size: 12px;
+            color: #059669;
+            margin-top: 8px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #E5E7EB;
+            margin-bottom: 24px;
+        }
+        
+        .card-title {
+            margin-bottom: 16px;
+            color: #111827;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .action-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #F3F4F6;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .action-item:last-child {
+            border-bottom: none;
+        }
+        
+        .action-bullet {
+            color: #F97316;
+            font-weight: bold;
         }
         
         .btn {
@@ -227,186 +317,139 @@
         .status-approved { background: #D1FAE5; color: #059669; }
         .status-outstanding { background: #FEE2E2; color: #DC2626; }
         .status-paid { background: #D1FAE5; color: #059669; }
+        .status-draft { background: #F3F4F6; color: #6B7280; }
+        .status-sent { background: #DBEAFE; color: #3B82F6; }
+        .status-invoiced { background: #D1FAE5; color: #059669; }
+        
+        .view-section {
+            display: none;
+        }
+        
+        .view-section.active {
+            display: block;
+        }
         
         @media (max-width: 768px) {
             .app-container { flex-direction: column; }
-            .sidebar { width: 100%; min-height: auto; }
+            .sidebar { width: 100%; min-height: auto; position: static; }
             .main-content { padding: 16px; }
-            .metric-grid { grid-template-columns: 1fr 1fr; }
+            .metrics-grid { grid-template-columns: 1fr 1fr; }
         }
     </style>
 </head>
 <body>
     <div class="demo-banner">
-        🧪 FINANCE HUB PRO - STANDALONE DEMO - Full Interactive Preview (Download & Open Locally)
+        🧪 FINANCE HUB PRO - INTERACTIVE DEMO - Experience Your New System
     </div>
     
     <div class="mock-notice">
         <strong>🎯 Demo Mode:</strong> This is your Finance Hub Pro preview with mock data. Experience the speed, design, and functionality your team will get. All features are interactive!
     </div>
 
-    <div id="root"></div>
-
-    <script type="text/babel">
-        const { useState, useEffect } = React;
-        const { ChakraProvider, Box, Flex, Stack, Text, Button, HStack, VStack, Heading, Alert } = ChakraUI;
-
-        // Mock Data
-        const mockData = {
-            dashboard: {
-                metrics: [
-                    { label: 'Outstanding CEs', value: '7', trend: '+2 from last week' },
-                    { label: 'Pending Payments', value: 'R47,280', trend: '3 payments due' },
-                    { label: 'Monthly Revenue', value: 'R284,650', trend: '+12% vs last month' },
-                    { label: 'Active Projects', value: '23', trend: '5 new this month' }
-                ],
-                actionItems: [
-                    'Review 3 pending CE approvals',
-                    'Process R47K in outstanding payments',
-                    'Send 4 invoices awaiting delivery',
-                    'Update 2 client retainer agreements'
-                ]
-            },
-            costEstimates: [
-                { id: 'CE-2026-001', client: 'Ayana Active', amount: 'R15,500', status: 'Pending Approval', date: '2026-02-18' },
-                { id: 'CE-2026-002', client: 'Checkers', amount: 'R28,750', status: 'Approved', date: '2026-02-17' },
-                { id: 'CE-2026-003', client: 'OSMO', amount: 'R12,300', status: 'Draft', date: '2026-02-16' },
-                { id: 'CE-2026-004', client: 'Vodacom', amount: 'R45,600', status: 'CE Sent', date: '2026-02-15' },
-                { id: 'CE-2026-005', client: 'PEP', amount: 'R22,150', status: 'Invoiced', date: '2026-02-14' }
-            ],
-            payments: [
-                { id: 'PAY-001', client: 'Shoe City', amount: 'R18,500', status: 'Outstanding', dueDate: '2026-02-20' },
-                { id: 'PAY-002', client: 'TAH', amount: 'R12,750', status: 'In Payrun', dueDate: '2026-02-18' },
-                { id: 'PAY-003', client: 'Refinery', amount: 'R31,200', status: 'Paid', dueDate: '2026-02-15' },
-                { id: 'PAY-004', client: 'SPCC', amount: 'R8,950', status: 'Outstanding', dueDate: '2026-02-22' }
-            ],
-            invoices: [
-                { id: 'INV-2026-015', client: 'Cuddlesome', amount: 'R24,800', status: 'Sent', date: '2026-02-17' },
-                { id: 'INV-2026-014', client: 'LA LAB', amount: 'R19,650', status: 'Paid', date: '2026-02-16' },
-                { id: 'INV-2026-013', client: 'CODE', amount: 'R36,400', status: 'Overdue', date: '2026-02-10' }
-            ]
-        };
-
-        // Logo Component
-        const TrendfarmLogo = () => (
-            <div className="logo-container">
-                <div className="logo">TF</div>
-                <div>
-                    <div style={{ fontWeight: 'bold', fontSize: '20px', color: '#111827' }}>Trendfarm</div>
-                    <div style={{ fontSize: '14px', color: '#F97316', fontWeight: '500' }}>Finance Hub Pro</div>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo-container">
+                <div class="logo">TF</div>
+                <div class="logo-text">
+                    <div class="logo-title">Trendfarm</div>
+                    <div class="logo-subtitle">Finance Hub Pro</div>
                 </div>
             </div>
-        );
-
-        // Navigation Component
-        const Navigation = ({ activeView, setActiveView }) => {
-            const navItems = [
-                { id: 'dashboard', label: 'Dashboard', icon: '📊', badge: null },
-                { id: 'cost-estimates', label: 'Cost Estimates', icon: '📄', badge: '3' },
-                { id: 'payments', label: 'Payments', icon: '💳', badge: '2' },
-                { id: 'invoices', label: 'Invoices', icon: '🧾', badge: null },
-            ];
-
-            return (
-                <div className="sidebar">
-                    <TrendfarmLogo />
-                    
-                    <div style={{ marginBottom: '24px' }}>
-                        <div style={{ fontSize: '12px', fontWeight: '600', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '12px' }}>
-                            NAVIGATION
-                        </div>
-                        {navItems.map(item => (
-                            <div 
-                                key={item.id}
-                                className={`nav-item ${activeView === item.id ? 'active' : ''}`}
-                                onClick={() => setActiveView(item.id)}
-                            >
-                                <span style={{ fontSize: '18px' }}>{item.icon}</span>
-                                <span style={{ flex: 1 }}>{item.label}</span>
-                                {item.badge && (
-                                    <span style={{ 
-                                        background: '#F97316', 
-                                        color: 'white', 
-                                        borderRadius: '20px', 
-                                        padding: '2px 8px', 
-                                        fontSize: '12px', 
-                                        fontWeight: 'bold',
-                                        minWidth: '20px',
-                                        textAlign: 'center'
-                                    }}>
-                                        {item.badge}
-                                    </span>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-
-                    <div style={{ 
-                        padding: '16px', 
-                        background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%)', 
-                        borderRadius: '12px',
-                        border: '1px solid rgba(249, 115, 22, 0.2)'
-                    }}>
-                        <div style={{ fontSize: '14px', fontWeight: '600', color: '#F97316', marginBottom: '8px' }}>
-                            💡 Finance Hub Pro
-                        </div>
-                        <div style={{ fontSize: '12px', color: '#6B7280', lineHeight: '1.4' }}>
-                            5-10x faster than Vibe, enterprise design, mobile responsive, unlimited potential!
-                        </div>
-                    </div>
+            
+            <div class="nav-section">
+                <div class="nav-header">Navigation</div>
+                <div class="nav-item active" onclick="showView('dashboard')">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
                 </div>
-            );
-        };
-
-        // Dashboard View
-        const DashboardView = () => (
-            <div>
-                <div className="section-title">Dashboard</div>
-                <div className="section-subtitle">Your finance overview at a glance</div>
-                
-                <div className="metric-grid">
-                    {mockData.dashboard.metrics.map((metric, index) => (
-                        <div key={index} className="metric-card">
-                            <div className="metric-value">{metric.value}</div>
-                            <div className="metric-label">{metric.label}</div>
-                            <div style={{ fontSize: '12px', color: '#059669', marginTop: '8px' }}>
-                                {metric.trend}
-                            </div>
-                        </div>
-                    ))}
+                <div class="nav-item" onclick="showView('cost-estimates')">
+                    <span class="nav-icon">📄</span>
+                    <span>Cost Estimates</span>
+                    <span class="nav-badge">3</span>
                 </div>
-
-                <div className="card">
-                    <h3 style={{ marginBottom: '16px', color: '#111827' }}>Action Items</h3>
-                    {mockData.dashboard.actionItems.map((item, index) => (
-                        <div key={index} style={{ 
-                            padding: '12px 0', 
-                            borderBottom: index < mockData.dashboard.actionItems.length - 1 ? '1px solid #F3F4F6' : 'none',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '12px'
-                        }}>
-                            <span style={{ color: '#F97316' }}>•</span>
-                            <span>{item}</span>
-                        </div>
-                    ))}
+                <div class="nav-item" onclick="showView('payments')">
+                    <span class="nav-icon">💳</span>
+                    <span>Payments</span>
+                    <span class="nav-badge">2</span>
+                </div>
+                <div class="nav-item" onclick="showView('invoices')">
+                    <span class="nav-icon">🧾</span>
+                    <span>Invoices</span>
                 </div>
             </div>
-        );
 
-        // Cost Estimates View
-        const CostEstimatesView = () => (
-            <div>
-                <div className="section-title">Cost Estimates</div>
-                <div className="section-subtitle">Manage project estimates and approvals</div>
+            <div class="tip-box">
+                <div class="tip-title">💡 Finance Hub Pro</div>
+                <div class="tip-text">
+                    5-10x faster than Vibe, enterprise design, mobile responsive, unlimited potential!
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Dashboard View -->
+            <div id="dashboard" class="view-section active">
+                <div class="section-title">Dashboard</div>
+                <div class="section-subtitle">Your finance overview at a glance</div>
                 
-                <div style={{ marginBottom: '24px' }}>
-                    <button className="btn">+ New Cost Estimate</button>
-                    <button className="btn btn-secondary">Export to PDF</button>
-                    <button className="btn btn-secondary">Bulk Actions</button>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">7</div>
+                        <div class="metric-label">Outstanding CEs</div>
+                        <div class="metric-trend">+2 from last week</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">R47,280</div>
+                        <div class="metric-label">Pending Payments</div>
+                        <div class="metric-trend">3 payments due</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">R284,650</div>
+                        <div class="metric-label">Monthly Revenue</div>
+                        <div class="metric-trend">+12% vs last month</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">23</div>
+                        <div class="metric-label">Active Projects</div>
+                        <div class="metric-trend">5 new this month</div>
+                    </div>
                 </div>
 
-                <table className="table">
+                <div class="card">
+                    <div class="card-title">Action Items</div>
+                    <div class="action-item">
+                        <span class="action-bullet">•</span>
+                        <span>Review 3 pending CE approvals</span>
+                    </div>
+                    <div class="action-item">
+                        <span class="action-bullet">•</span>
+                        <span>Process R47K in outstanding payments</span>
+                    </div>
+                    <div class="action-item">
+                        <span class="action-bullet">•</span>
+                        <span>Send 4 invoices awaiting delivery</span>
+                    </div>
+                    <div class="action-item">
+                        <span class="action-bullet">•</span>
+                        <span>Update 2 client retainer agreements</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cost Estimates View -->
+            <div id="cost-estimates" class="view-section">
+                <div class="section-title">Cost Estimates</div>
+                <div class="section-subtitle">Manage project estimates and approvals</div>
+                
+                <div style="margin-bottom: 24px;">
+                    <button class="btn">+ New Cost Estimate</button>
+                    <button class="btn btn-secondary">Export to PDF</button>
+                    <button class="btn btn-secondary">Bulk Actions</button>
+                </div>
+
+                <table class="table">
                     <thead>
                         <tr>
                             <th>CE ID</th>
@@ -418,42 +461,62 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {mockData.costEstimates.map(ce => (
-                            <tr key={ce.id}>
-                                <td style={{ fontWeight: '600' }}>{ce.id}</td>
-                                <td>{ce.client}</td>
-                                <td style={{ fontWeight: '600', color: '#F97316' }}>{ce.amount}</td>
-                                <td>
-                                    <span className={`status-badge status-${ce.status.toLowerCase().replace(' ', '-')}`}>
-                                        {ce.status}
-                                    </span>
-                                </td>
-                                <td>{ce.date}</td>
-                                <td>
-                                    <button className="btn" style={{ padding: '6px 12px', fontSize: '12px' }}>
-                                        Edit
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
+                        <tr>
+                            <td style="font-weight: 600;">CE-2026-001</td>
+                            <td>Ayana Active</td>
+                            <td style="font-weight: 600; color: #F97316;">R15,500</td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                            <td>2026-02-18</td>
+                            <td><button class="btn" style="padding: 6px 12px; font-size: 12px;">Edit</button></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">CE-2026-002</td>
+                            <td>Checkers</td>
+                            <td style="font-weight: 600; color: #F97316;">R28,750</td>
+                            <td><span class="status-badge status-approved">Approved</span></td>
+                            <td>2026-02-17</td>
+                            <td><button class="btn" style="padding: 6px 12px; font-size: 12px;">Edit</button></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">CE-2026-003</td>
+                            <td>OSMO</td>
+                            <td style="font-weight: 600; color: #F97316;">R12,300</td>
+                            <td><span class="status-badge status-draft">Draft</span></td>
+                            <td>2026-02-16</td>
+                            <td><button class="btn" style="padding: 6px 12px; font-size: 12px;">Edit</button></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">CE-2026-004</td>
+                            <td>Vodacom</td>
+                            <td style="font-weight: 600; color: #F97316;">R45,600</td>
+                            <td><span class="status-badge status-sent">CE Sent</span></td>
+                            <td>2026-02-15</td>
+                            <td><button class="btn" style="padding: 6px 12px; font-size: 12px;">Edit</button></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">CE-2026-005</td>
+                            <td>PEP</td>
+                            <td style="font-weight: 600; color: #F97316;">R22,150</td>
+                            <td><span class="status-badge status-invoiced">Invoiced</span></td>
+                            <td>2026-02-14</td>
+                            <td><button class="btn" style="padding: 6px 12px; font-size: 12px;">Edit</button></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
-        );
 
-        // Payments View  
-        const PaymentsView = () => (
-            <div>
-                <div className="section-title">Payments</div>
-                <div className="section-subtitle">Track and manage client payments</div>
+            <!-- Payments View -->
+            <div id="payments" class="view-section">
+                <div class="section-title">Payments</div>
+                <div class="section-subtitle">Track and manage client payments</div>
                 
-                <div style={{ marginBottom: '24px' }}>
-                    <button className="btn">Update Status</button>
-                    <button className="btn btn-secondary">Export to FNB</button>
-                    <button className="btn btn-secondary">Generate Reports</button>
+                <div style="margin-bottom: 24px;">
+                    <button class="btn">Update Status</button>
+                    <button class="btn btn-secondary">Export to FNB</button>
+                    <button class="btn btn-secondary">Generate Reports</button>
                 </div>
 
-                <table className="table">
+                <table class="table">
                     <thead>
                         <tr>
                             <th>Payment ID</th>
@@ -465,42 +528,54 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {mockData.payments.map(payment => (
-                            <tr key={payment.id}>
-                                <td style={{ fontWeight: '600' }}>{payment.id}</td>
-                                <td>{payment.client}</td>
-                                <td style={{ fontWeight: '600', color: '#F97316' }}>{payment.amount}</td>
-                                <td>
-                                    <span className={`status-badge status-${payment.status.toLowerCase().replace(' ', '-')}`}>
-                                        {payment.status}
-                                    </span>
-                                </td>
-                                <td>{payment.dueDate}</td>
-                                <td>
-                                    <button className="btn" style={{ padding: '6px 12px', fontSize: '12px' }}>
-                                        Update
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
+                        <tr>
+                            <td style="font-weight: 600;">PAY-001</td>
+                            <td>Shoe City</td>
+                            <td style="font-weight: 600; color: #F97316;">R18,500</td>
+                            <td><span class="status-badge status-outstanding">Outstanding</span></td>
+                            <td>2026-02-20</td>
+                            <td><button class="btn" style="padding: 6px 12px; font-size: 12px;">Update</button></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">PAY-002</td>
+                            <td>TAH</td>
+                            <td style="font-weight: 600; color: #F97316;">R12,750</td>
+                            <td><span class="status-badge status-pending">In Payrun</span></td>
+                            <td>2026-02-18</td>
+                            <td><button class="btn" style="padding: 6px 12px; font-size: 12px;">Update</button></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">PAY-003</td>
+                            <td>Refinery</td>
+                            <td style="font-weight: 600; color: #F97316;">R31,200</td>
+                            <td><span class="status-badge status-paid">Paid</span></td>
+                            <td>2026-02-15</td>
+                            <td><button class="btn" style="padding: 6px 12px; font-size: 12px;">Update</button></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">PAY-004</td>
+                            <td>SPCC</td>
+                            <td style="font-weight: 600; color: #F97316;">R8,950</td>
+                            <td><span class="status-badge status-outstanding">Outstanding</span></td>
+                            <td>2026-02-22</td>
+                            <td><button class="btn" style="padding: 6px 12px; font-size: 12px;">Update</button></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
-        );
 
-        // Invoices View
-        const InvoicesView = () => (
-            <div>
-                <div className="section-title">Invoices</div>
-                <div className="section-subtitle">Invoice management and PDF downloads</div>
+            <!-- Invoices View -->
+            <div id="invoices" class="view-section">
+                <div class="section-title">Invoices</div>
+                <div class="section-subtitle">Invoice management and PDF downloads</div>
                 
-                <div style={{ marginBottom: '24px' }}>
-                    <button className="btn">Create Invoice</button>
-                    <button className="btn btn-secondary">Download PDFs</button>
-                    <button className="btn btn-secondary">Send Batch</button>
+                <div style="margin-bottom: 24px;">
+                    <button class="btn">Create Invoice</button>
+                    <button class="btn btn-secondary">Download PDFs</button>
+                    <button class="btn btn-secondary">Send Batch</button>
                 </div>
 
-                <table className="table">
+                <table class="table">
                     <thead>
                         <tr>
                             <th>Invoice ID</th>
@@ -512,55 +587,72 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {mockData.invoices.map(invoice => (
-                            <tr key={invoice.id}>
-                                <td style={{ fontWeight: '600' }}>{invoice.id}</td>
-                                <td>{invoice.client}</td>
-                                <td style={{ fontWeight: '600', color: '#F97316' }}>{invoice.amount}</td>
-                                <td>
-                                    <span className={`status-badge status-${invoice.status.toLowerCase()}`}>
-                                        {invoice.status}
-                                    </span>
-                                </td>
-                                <td>{invoice.date}</td>
-                                <td>
-                                    <button className="btn" style={{ padding: '6px 12px', fontSize: '12px' }}>
-                                        Download
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
+                        <tr>
+                            <td style="font-weight: 600;">INV-2026-015</td>
+                            <td>Cuddlesome</td>
+                            <td style="font-weight: 600; color: #F97316;">R24,800</td>
+                            <td><span class="status-badge status-sent">Sent</span></td>
+                            <td>2026-02-17</td>
+                            <td><button class="btn" style="padding: 6px 12px; font-size: 12px;">Download</button></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">INV-2026-014</td>
+                            <td>LA LAB</td>
+                            <td style="font-weight: 600; color: #F97316;">R19,650</td>
+                            <td><span class="status-badge status-paid">Paid</span></td>
+                            <td>2026-02-16</td>
+                            <td><button class="btn" style="padding: 6px 12px; font-size: 12px;">Download</button></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">INV-2026-013</td>
+                            <td>CODE</td>
+                            <td style="font-weight: 600; color: #F97316;">R36,400</td>
+                            <td><span class="status-badge status-outstanding">Overdue</span></td>
+                            <td>2026-02-10</td>
+                            <td><button class="btn" style="padding: 6px 12px; font-size: 12px;">Download</button></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
-        );
+        </div>
+    </div>
 
-        // Main App Component
-        const FinanceHubDemo = () => {
-            const [activeView, setActiveView] = useState('dashboard');
-
-            const renderContent = () => {
-                switch(activeView) {
-                    case 'dashboard': return <DashboardView />;
-                    case 'cost-estimates': return <CostEstimatesView />;
-                    case 'payments': return <PaymentsView />;
-                    case 'invoices': return <InvoicesView />;
-                    default: return <DashboardView />;
-                }
-            };
-
-            return (
-                <div className="app-container">
-                    <Navigation activeView={activeView} setActiveView={setActiveView} />
-                    <div className="main-content">
-                        {renderContent()}
-                    </div>
-                </div>
-            );
-        };
-
-        // Render the app
-        ReactDOM.render(<FinanceHubDemo />, document.getElementById('root'));
+    <script>
+        function showView(viewId) {
+            // Hide all views
+            document.querySelectorAll('.view-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected view
+            document.getElementById(viewId).classList.add('active');
+            
+            // Add active class to clicked nav item
+            event.target.closest('.nav-item').classList.add('active');
+        }
+        
+        // Add some interactivity to buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Simple feedback
+                    const originalText = this.textContent;
+                    this.textContent = 'Action completed!';
+                    this.style.background = '#059669';
+                    
+                    setTimeout(() => {
+                        this.textContent = originalText;
+                        this.style.background = '';
+                    }, 1000);
+                });
+            });
+        });
     </script>
 </body>
 </html>
