@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Future Protocol | Behind the Seams</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* === FUTURE PROTOCOL DARK THEME === */
+    :root {
+        --bg-primary: #000000;
+        --bg-secondary: #111111;
+        --text-primary: #FFFFFF;
+        --text-secondary: #CCCCCC;
+        --text-muted: #888888;
+        --accent: #FFFFFF;
+        --accent-secondary: #333333;
+        --font-display: 'Poppins', sans-serif;
+        --font-body: 'Poppins', sans-serif;
+        --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+        --duration-normal: 0.6s;
+    }
+
+    /* === RESET === */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-snap-type: y mandatory; overflow-y: scroll; }
+    body { font-family: var(--font-body); background: var(--bg-primary); color: var(--text-primary); }
+
+    /* === SLIDES === */
+    .slide { width: 100vw; height: 100vh; scroll-snap-align: start; position: relative;
+             overflow: hidden; display: flex; }
+
+    /* === NAV DOTS === */
+    .nav { position: fixed; right: 24px; top: 50%; transform: translateY(-50%);
+           z-index: 100; display: flex; flex-direction: column; gap: 8px; }
+    .nav button { width: 8px; height: 8px; border-radius: 50%;
+                  border: 1px solid rgba(255,255,255,0.3); background: transparent;
+                  cursor: pointer; transition: all 0.3s; }
+    .nav button.active { background: #fff; border-color: #fff; transform: scale(1.2); }
+
+    /* === IMAGES === */
+    .slide-image { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; opacity: 0.3; }
+    .slide-overlay { position: absolute; inset: 0;
+                     background: linear-gradient(45deg, rgba(0,0,0,0.9), rgba(0,0,0,0.6)); }
+
+    /* === TYPOGRAPHY === */
+    .heading-xl { font-size: clamp(48px, 8vw, 120px); font-weight: 300; line-height: 0.9; letter-spacing: -2px; }
+    .heading-lg { font-size: clamp(28px, 5vw, 64px); font-weight: 300; line-height: 1.1; letter-spacing: -1px; }
+    .heading-md { font-size: clamp(20px, 3vw, 32px); font-weight: 400; line-height: 1.3; }
+    .heading-sm { font-size: clamp(16px, 2vw, 20px); font-weight: 500; line-height: 1.4; }
+    .body-text  { font-size: 16px; font-weight: 300; line-height: 1.7; color: var(--text-secondary); max-width: 540px; }
+    .body-large { font-size: 20px; font-weight: 300; line-height: 1.6; color: var(--text-secondary); max-width: 600px; }
+    .label      { font-size: 11px; text-transform: uppercase; letter-spacing: 4px;
+                  font-weight: 500; color: var(--text-muted); }
+    .quote-text { font-size: clamp(18px, 3vw, 28px); font-weight: 300; line-height: 1.4; 
+                  font-style: italic; color: var(--text-primary); }
+
+    /* === SECTION BAR === */
+    .section-bar { display: flex; justify-content: space-between; align-items: center; 
+                   padding: 20px 32px; font-size: 10px; text-transform: uppercase; 
+                   letter-spacing: 3px; font-weight: 500; color: var(--text-muted);
+                   position: absolute; top: 0; left: 0; right: 0; z-index: 10; }
+
+    /* === ANIMATIONS === */
+    .slide-content { opacity: 0; transform: translateY(40px); transition: all var(--duration-normal) var(--ease-out-expo); }
+    .slide.visible .slide-content { opacity: 1; transform: translateY(0); }
+    .slide-content:nth-child(2) { transition-delay: 0.1s; }
+    .slide-content:nth-child(3) { transition-delay: 0.2s; }
+    .slide-content:nth-child(4) { transition-delay: 0.3s; }
+    .slide-content:nth-child(5) { transition-delay: 0.4s; }
+    .slide-content:nth-child(6) { transition-delay: 0.5s; }
+
+    /* === LAYOUT HELPERS === */
+    .center { display: flex; justify-content: center; align-items: center; text-align: center; }
+    .left-content { display: flex; align-items: center; padding: 0 48px; }
+    .full-content { padding: 48px; height: 100vh; display: flex; flex-direction: column; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; height: 100vh; }
+    .content-grid { display: grid; gap: 32px; margin-top: 48px; }
+    .objectives-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 40px; }
+    
+    /* === CONCEPT ELEMENTS === */
+    .concept-number { font-size: clamp(120px, 15vw, 200px); font-weight: 100; color: rgba(255,255,255,0.1); 
+                      line-height: 0.8; position: absolute; top: -20px; right: 32px; z-index: 1; }
+    
+    .series-title { 
+        font-size: clamp(36px, 6vw, 80px); 
+        font-weight: 700; 
+        line-height: 0.9; 
+        letter-spacing: -2px;
+        background: linear-gradient(45deg, #fff, #ccc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .objective-item { 
+        padding: 24px; 
+        background: rgba(255,255,255,0.03); 
+        border-left: 2px solid rgba(255,255,255,0.2); 
+        border-radius: 0 8px 8px 0;
+        backdrop-filter: blur(10px);
+    }
+    
+    .objective-number { 
+        color: #fff; 
+        font-size: 32px; 
+        font-weight: 100; 
+        margin-bottom: 12px; 
+        opacity: 0.7;
+    }
+    
+    .brand-strip { 
+        position: absolute; 
+        bottom: 0; 
+        left: 0; 
+        right: 0; 
+        height: 2px; 
+        background: linear-gradient(90deg, transparent, #fff, transparent); 
+        opacity: 0.3;
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 768px) { 
+        .nav { display: none; }
+        .two-col { grid-template-columns: 1fr; }
+        .objectives-grid { grid-template-columns: 1fr; }
+        .left-content { padding: 24px; }
+        .full-content { padding: 24px; }
+        .section-bar { padding: 16px 24px; }
+        .concept-number { font-size: 80px; top: 16px; right: 16px; }
+    }
+    
+    @media (prefers-reduced-motion: reduce) {
+      .slide-content { transition: opacity 0.3s ease; transform: none; }
+    }
+
+    /* === CUSTOM ELEMENTS === */
+    .culture-badge {
+        display: inline-block;
+        padding: 8px 16px;
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin: 4px 8px 4px 0;
+    }
+    
+    .visual-ref-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-top: 32px;
+    }
+    
+    .visual-ref-item {
+        aspect-ratio: 16/9;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        color: var(--text-muted);
+        text-align: center;
+        padding: 16px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" aria-label="Slide navigation">
+    <button onclick="document.getElementById('slide-1').scrollIntoView({behavior:'smooth'})"></button>
+    <button onclick="document.getElementById('slide-2').scrollIntoView({behavior:'smooth'})"></button>
+    <button onclick="document.getElementById('slide-3').scrollIntoView({behavior:'smooth'})"></button>
+    <button onclick="document.getElementById('slide-4').scrollIntoView({behavior:'smooth'})"></button>
+    <button onclick="document.getElementById('slide-5').scrollIntoView({behavior:'smooth'})"></button>
+    <button onclick="document.getElementById('slide-6').scrollIntoView({behavior:'smooth'})"></button>
+    <button onclick="document.getElementById('slide-7').scrollIntoView({behavior:'smooth'})"></button>
+    <button onclick="document.getElementById('slide-8').scrollIntoView({behavior:'smooth'})"></button>
+  </nav>
+
+  <!-- SLIDE 1: COVER -->
+  <section id="slide-1" class="slide center" style="flex-direction:column;padding:48px;position:relative;">
+    <div class="slide-content" style="text-align: center; position: relative; z-index: 10;">
+      <p class="label" style="margin-bottom:32px;opacity:0.7;">SPCC | FUTURE PROTOCOL</p>
+      <div class="series-title" style="margin-bottom: 24px;">Behind the Seams</div>
+      <p class="heading-md" style="color: var(--text-secondary); margin-bottom: 48px;">
+        Content Series Launch Strategy
+      </p>
+      <div style="display:flex;gap:40px;justify-content:center;flex-wrap:wrap;">
+        <p class="label">TRENDFARM CREATIVE</p>
+        <p class="label">FEBRUARY 2026</p>
+        <p class="label">CONCEPT PRESENTATION</p>
+      </div>
+    </div>
+    <div class="brand-strip"></div>
+  </section>
+
+  <!-- SLIDE 2: THE BRIEF -->
+  <section id="slide-2" class="slide">
+    <div class="section-bar">
+      <span>01. THE BRIEF</span>
+      <span>FUTURE PROTOCOL | BEHIND THE SEAMS</span>
+    </div>
+    <div class="left-content" style="flex-direction: column; align-items: flex-start; padding-top: 120px;">
+      <div class="concept-number">01</div>
+      <div class="slide-content">
+        <h2 class="heading-lg" style="margin-bottom: 32px;">Authentically Local</h2>
+        <p class="body-large" style="margin-bottom: 40px;">
+          Future Protocol needs to feel homegrown, local, and authentically South African — like it was created by young Black creatives who live and breathe local culture.
+        </p>
+      </div>
+      
+      <div class="slide-content">
+        <div class="content-grid" style="grid-template-columns: 1fr 1fr; gap: 40px;">
+          <div>
+            <h4 class="heading-sm" style="margin-bottom: 16px; color: #fff;">The Challenge</h4>
+            <p class="body-text">
+              A new, accessible range for younger, price-sensitive customers who still want fashion-forward looks
+            </p>
+          </div>
+          <div>
+            <h4 class="heading-sm" style="margin-bottom: 16px; color: #fff;">The Energy</h4>
+            <p class="body-text">
+              Content that carries authentic local culture from the very first frame
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3: THE CONCEPT -->
+  <section id="slide-3" class="slide">
+    <div class="section-bar">
+      <span>02. THE CONCEPT</span>
+      <span>STRIPPED-BACK AUTHENTICITY</span>
+    </div>
+    <div class="full-content" style="justify-content: center; position: relative;">
+      <div class="concept-number">02</div>
+      
+      <div class="slide-content" style="max-width: 800px; margin: 0 auto;">
+        <div class="quote-text" style="margin-bottom: 48px; text-align: center;">
+          "A stripped-back studio space — not luxe, not glossy. Raw, real, slightly industrial. Like you've walked into a creative's workspace, not a magazine set."
+        </div>
+        
+        <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-bottom: 48px;">
+          <div class="culture-badge">Raw</div>
+          <div class="culture-badge">Real</div>
+          <div class="culture-badge">Industrial</div>
+          <div class="culture-badge">BTS Access</div>
+          <div class="culture-badge">Maker Culture</div>
+        </div>
+        
+        <p class="body-large" style="text-align: center;">
+          Watch a real creative build real outfits in real time — not a scripted ad
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 4: VISUAL REFERENCES -->
+  <section id="slide-4" class="slide">
+    <div class="section-bar">
+      <span>03. VISUAL DIRECTION</span>
+      <span>REFERENCE MATERIALS</span>
+    </div>
+    <div class="full-content" style="padding-top: 120px;">
+      <div class="concept-number">03</div>
+      
+      <div class="slide-content">
+        <h2 class="heading-lg" style="margin-bottom: 24px;">Creative Assets</h2>
+        <p class="body-text" style="margin-bottom: 40px;">
+          Visual references and brand materials from Google Drive folders
+        </p>
+      </div>
+      
+      <div class="slide-content visual-ref-grid">
+        <div class="visual-ref-item">
+          <div>
+            <strong>Future Protocol Logos</strong><br>
+            <small>Brand identity assets</small>
+          </div>
+        </div>
+        <div class="visual-ref-item">
+          <div>
+            <strong>Cover Imagery</strong><br>
+            <small>Hero campaign visuals</small>
+          </div>
+        </div>
+        <div class="visual-ref-item">
+          <div>
+            <strong>Styling References</strong><br>
+            <small>Look development shots</small>
+          </div>
+        </div>
+        <div class="visual-ref-item">
+          <div>
+            <strong>Video References</strong><br>
+            <small>Motion and pacing guides</small>
+          </div>
+        </div>
+      </div>
+      
+      <div class="slide-content" style="margin-top: 40px;">
+        <p class="label">Assets accessible via shared Google Drive folders</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 5: SERIES EXECUTION -->
+  <section id="slide-5" class="slide">
+    <div class="section-bar">
+      <span>04. SERIES EXECUTION</span>
+      <span>HOW IT WORKS</span>
+    </div>
+    <div class="two-col">
+      <div style="background: rgba(255,255,255,0.02); padding: 48px; display: flex; flex-direction: column; justify-content: center;">
+        <div class="concept-number" style="position: relative; top: -40px; right: 0; font-size: 120px;">04</div>
+        <div class="slide-content">
+          <h2 class="heading-lg" style="margin-bottom: 32px;">The Process</h2>
+          <div style="display: grid; gap: 24px;">
+            <div style="display: flex; align-items: flex-start; gap: 16px;">
+              <div style="color: #fff; font-size: 24px; font-weight: 100; width: 32px;">01</div>
+              <div>
+                <h4 style="color: #fff; margin-bottom: 8px;">Model Steps In</h4>
+                <p class="body-text">Influencer enters stripped-back studio space</p>
+              </div>
+            </div>
+            <div style="display: flex; align-items: flex-start; gap: 16px;">
+              <div style="color: #fff; font-size: 24px; font-weight: 100; width: 32px;">02</div>
+              <div>
+                <h4 style="color: #fff; margin-bottom: 8px;">Stylist Takes Over</h4>
+                <p class="body-text">Local stylist builds looks in real time on camera</p>
+              </div>
+            </div>
+            <div style="display: flex; align-items: flex-start; gap: 16px;">
+              <div style="color: #fff; font-size: 24px; font-weight: 100; width: 32px;">03</div>
+              <div>
+                <h4 style="color: #fff; margin-bottom: 8px;">Live Commentary</h4>
+                <p class="body-text">Explains choices, fits, cultural connections</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div style="padding: 48px; display: flex; flex-direction: column; justify-content: center;">
+        <div class="slide-content">
+          <h3 class="heading-md" style="margin-bottom: 24px;">What They Share</h3>
+          <ul style="list-style: none; padding: 0; margin: 0;">
+            <li style="margin-bottom: 16px; padding-left: 24px; position: relative;">
+              <span style="position: absolute; left: 0; color: #fff;">→</span>
+              <span class="body-text">Why these pieces work together</span>
+            </li>
+            <li style="margin-bottom: 16px; padding-left: 24px; position: relative;">
+              <span style="position: absolute; left: 0; color: #fff;">→</span>
+              <span class="body-text">How to dress them up or down</span>
+            </li>
+            <li style="margin-bottom: 16px; padding-left: 24px; position: relative;">
+              <span style="position: absolute; left: 0; color: #fff;">→</span>
+              <span class="body-text">What makes the details worth attention</span>
+            </li>
+            <li style="margin-bottom: 16px; padding-left: 24px; position: relative;">
+              <span style="position: absolute; left: 0; color: #fff;">→</span>
+              <span class="body-text">Connection to local street culture</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 6: CONTENT OBJECTIVES -->
+  <section id="slide-6" class="slide">
+    <div class="section-bar">
+      <span>05. CONTENT STRATEGY</span>
+      <span>FIVE KEY OBJECTIVES</span>
+    </div>
+    <div class="full-content" style="padding-top: 120px;">
+      <div class="concept-number">05</div>
+      
+      <div class="slide-content">
+        <h2 class="heading-lg" style="margin-bottom: 40px;">Content Objectives</h2>
+      </div>
+      
+      <div class="slide-content objectives-grid">
+        <div class="objective-item">
+          <div class="objective-number">01</div>
+          <p class="body-text">Add credibility through association with respected local stylists</p>
+        </div>
+        <div class="objective-item">
+          <div class="objective-number">02</div>
+          <p class="body-text">Showcase range and key looks — drive store visits and online browsing</p>
+        </div>
+        <div class="objective-item">
+          <div class="objective-number">03</div>
+          <p class="body-text">Show customers ways to wear pieces — practical styling inspiration</p>
+        </div>
+        <div class="objective-item">
+          <div class="objective-number">04</div>
+          <p class="body-text">Feel local, Black, cool, authentically South African — not imported</p>
+        </div>
+      </div>
+      
+      <div class="slide-content" style="margin-top: 32px; text-align: center;">
+        <div class="objective-item" style="display: inline-block; background: rgba(255,255,255,0.08);">
+          <div class="objective-number" style="display: inline; margin-right: 16px;">05</div>
+          <span class="body-text">Take Gen Z behind the slick lens — into the BTS, maker mindset, less glamorous but more real creative process</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 7: CULTURAL AUTHENTICITY -->
+  <section id="slide-7" class="slide center" style="flex-direction:column;padding:48px;">
+    <div class="slide-content" style="text-align: center; max-width: 900px;">
+      <div class="concept-number" style="position: relative; top: -60px; opacity: 0.05;">06</div>
+      
+      <h2 class="heading-lg" style="margin-bottom: 32px;">Authentically South African</h2>
+      
+      <div class="quote-text" style="margin-bottom: 48px; max-width: 700px; margin-left: auto; margin-right: auto;">
+        "Not a scripted ad. Insider access — watching a real creative put real outfits together."
+      </div>
+      
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 32px; margin-top: 48px;">
+        <div style="text-align: center;">
+          <div style="font-size: 48px; margin-bottom: 16px;">🏠</div>
+          <h4 style="color: #fff; margin-bottom: 8px;">Homegrown</h4>
+          <p class="body-text" style="text-align: center;">Created by local creatives who understand the culture</p>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 48px; margin-bottom: 16px;">🎯</div>
+          <h4 style="color: #fff; margin-bottom: 8px;">Targeted</h4>
+          <p class="body-text" style="text-align: center;">Gen Z appetite for authenticity and maker culture</p>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 48px; margin-bottom: 16px;">⚡</div>
+          <h4 style="color: #fff; margin-bottom: 8px;">Underground</h4>
+          <p class="body-text" style="text-align: center;">Feels cool, current, culturally relevant</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 8: NEXT STEPS -->
+  <section id="slide-8" class="slide center" style="flex-direction:column;padding:48px;background: linear-gradient(45deg, #000000 0%, #111111 100%);">
+    <div class="slide-content" style="text-align: center;">
+      <div class="series-title" style="margin-bottom: 32px; font-size: clamp(32px, 5vw, 64px);">
+        Behind the Seams
+      </div>
+      <p class="heading-sm" style="margin-bottom: 48px; color: var(--text-secondary);">
+        Ready to bring authentic South African style to Future Protocol
+      </p>
+      
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 32px; max-width: 800px; margin: 48px auto;">
+        <div style="text-align: center; padding: 24px; background: rgba(255,255,255,0.03); border-radius: 8px;">
+          <h4 style="color: #fff; margin-bottom: 12px;">Phase 1</h4>
+          <p class="body-text">Stylist casting & studio setup</p>
+        </div>
+        <div style="text-align: center; padding: 24px; background: rgba(255,255,255,0.03); border-radius: 8px;">
+          <h4 style="color: #fff; margin-bottom: 12px;">Phase 2</h4>
+          <p class="body-text">Content production & editing</p>
+        </div>
+        <div style="text-align: center; padding: 24px; background: rgba(255,255,255,0.03); border-radius: 8px;">
+          <h4 style="color: #fff; margin-bottom: 12px;">Phase 3</h4>
+          <p class="body-text">Series launch & amplification</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="slide-content" style="margin-top: 48px; text-align: center;">
+      <div style="padding: 16px 32px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; display: inline-block;">
+        <span style="font-weight: 600; letter-spacing: 2px; text-transform: uppercase; font-size: 12px;">
+          TRENDFARM × FUTURE PROTOCOL | 2026
+        </span>
+      </div>
+    </div>
+    <div class="brand-strip"></div>
+  </section>
+
+  <script>
+    /* === KEYBOARD NAV === */
+    document.addEventListener('keydown', e => {
+      const slides = document.querySelectorAll('.slide');
+      const current = [...slides].findIndex(s => {
+        const r = s.getBoundingClientRect();
+        return r.top >= -50 && r.top <= 50;
+      });
+      if (['ArrowDown','ArrowRight',' '].includes(e.key)) {
+        e.preventDefault();
+        slides[Math.min(current + 1, slides.length - 1)].scrollIntoView({ behavior: 'smooth' });
+      }
+      if (['ArrowUp','ArrowLeft'].includes(e.key)) {
+        e.preventDefault();
+        slides[Math.max(current - 1, 0)].scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+
+    /* === INTERSECTION OBSERVER === */
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        entry.target.classList.toggle('visible', entry.isIntersecting);
+        const idx = [...document.querySelectorAll('.slide')].indexOf(entry.target);
+        const dots = document.querySelectorAll('.nav button');
+        if (dots[idx]) dots[idx].classList.toggle('active', entry.isIntersecting);
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('.slide').forEach(s => observer.observe(s));
+  </script>
+</body>
+</html>
